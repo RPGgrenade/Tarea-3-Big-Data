@@ -2,6 +2,7 @@ import time
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 from mrjob.protocol import JSONValueProtocol
+from mr3px.csvprotocol import CsvProtocol
 import re
 import itertools
 import csv
@@ -10,6 +11,8 @@ import json
 
 
 class PopularUsersPerCategory(MRJob):
+
+    OUTPUT_PROTOCOL = CsvProtocol
 
     def mapper_user_category(self, _, line):
         obj = json.loads(line)

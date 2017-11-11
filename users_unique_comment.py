@@ -3,6 +3,7 @@ import time
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 from mrjob.protocol import JSONValueProtocol
+from mr3px.csvprotocol import CsvProtocol
 import re
 import itertools
 import csv
@@ -12,6 +13,8 @@ import json
 regex = re.compile(r'\W+')
 
 class UniqueReview(MRJob):
+
+    OUTPUT_PROTOCOL = CsvProtocol
 
     def mapper_text_by_word(self, _, line):
         obj = json.loads(line)
