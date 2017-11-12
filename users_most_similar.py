@@ -9,11 +9,11 @@ import itertools
 import csv
 import string
 import json
+import output_to_csv
 
+similar_user_pairs = dict()
 
 class SimilarUsers(MRJob):
-
-    OUTPUT_PROTOCOL = CsvProtocol
 
     def mapper_user_ids(self, _, line):
         obj = json.loads(line)
@@ -42,6 +42,8 @@ class SimilarUsers(MRJob):
     def reducer_similar_pairs(self, key, values):
         similarity = sum(values)
         if similarity >= 0.5:
+            num = len(similar_user_pairs) + 1
+            similar_user_pairs[num] = key
             yield "Pair:", key
 
     def steps(self):
@@ -55,5 +57,6 @@ class SimilarUsers(MRJob):
 if __name__ == '__main__':
     start = time.time()
     SimilarUsers.run()
+    output_to_csv.make_csv('similar_users', similar_user_pairs)
     end = time.time()
     print("Time: " + str(end - start) + "sec")

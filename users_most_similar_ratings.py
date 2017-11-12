@@ -12,10 +12,11 @@ import csv
 import string
 import json
 
+import output_to_csv
+
+similar_users = dict()
 
 class SimilarUsersRatings(MRJob):
-
-    OUTPUT_PROTOCOL = CsvProtocol
 
     def mapper_user_data(self, _, line):
         obj = json.loads(line)
@@ -57,6 +58,8 @@ class SimilarUsersRatings(MRJob):
             total_divider_b += (rating_b*rating_b)
         similarity = total_dividend * 1.0/(math.sqrt(total_divider_a)*math.sqrt(total_divider_b))
         if similarity > 0.8:
+            num = len(similar_users) + 1
+            similar_users[num] = user_pair
             yield "Pair", user_pair
 
     def steps(self):
@@ -69,5 +72,6 @@ class SimilarUsersRatings(MRJob):
 if __name__ == '__main__':
     start = time.time()
     SimilarUsersRatings.run()
+    output_to_csv.make_csv('similar_users_ratings', similar_users)
     end = time.time()
     print("Time: " + str(end - start) + "sec")

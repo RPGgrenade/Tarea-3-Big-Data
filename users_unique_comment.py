@@ -14,8 +14,6 @@ regex = re.compile(r'\W+')
 
 class UniqueReview(MRJob):
 
-    OUTPUT_PROTOCOL = CsvProtocol
-
     def mapper_text_by_word(self, _, line):
         obj = json.loads(line)
         line = obj
@@ -29,11 +27,11 @@ class UniqueReview(MRJob):
 
     def reducer_uniques_in_text(self, words, associated_text):
 
-        for word in words:
-            associated_text_list = [t for t in associated_text]
-            n_associated_text_list = len(associated_text_list)
-            if n_associated_text_list == 1:
-                yield associated_text_list[0], 1
+        #for word in words:
+        associated_text_list = [t for t in associated_text]
+        n_associated_text_list = len(associated_text_list)
+        if n_associated_text_list == 1:
+            yield associated_text_list[0], 1
 
     def reducer_sum_uniques_in_text(self, associated_text, uniques):
         yield "Unique", [associated_text, sum(uniques)]

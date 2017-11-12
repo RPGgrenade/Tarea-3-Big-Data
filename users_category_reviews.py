@@ -8,11 +8,11 @@ import itertools
 import csv
 import string
 import json
+import output_to_csv
 
+categorey_reviews = dict()
 
 class PopularUsersPerCategory(MRJob):
-
-    OUTPUT_PROTOCOL = CsvProtocol
 
     def mapper_user_category(self, _, line):
         obj = json.loads(line)
@@ -81,6 +81,8 @@ class PopularUsersPerCategory(MRJob):
                 max_popularity = popularity
                 most_popular_user = user
 
+        categorey_reviews[category] = most_popular_user
+
         yield category, most_popular_user
 
     def steps(self):
@@ -93,5 +95,6 @@ class PopularUsersPerCategory(MRJob):
 if __name__ == '__main__':
     start = time.time()
     PopularUsersPerCategory.run()
+    output_to_csv.make_csv('popular_users_per_category', categorey_reviews)
     end = time.time()
     print("Time: " + str(end - start) + "sec")
