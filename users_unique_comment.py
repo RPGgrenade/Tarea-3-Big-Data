@@ -10,7 +10,11 @@ import csv
 import string
 import json
 
+import output_to_csv
+
 regex = re.compile(r'\W+')
+
+most_unique_comments = dict()
 
 class UniqueReview(MRJob):
 
@@ -38,13 +42,16 @@ class UniqueReview(MRJob):
 
     def reducer_max_words_used_once(self, uniques, all_info):
         text = ""
-        biggest_sum = 0
+        biggest_sum = 50
 
         for info in all_info:
             if info[1] > biggest_sum:
-                biggest_sum = info[1]
-                text = info[0]
-        yield biggest_sum, text
+                most_unique_comments[info[0]] = info[1]
+                yield info[1], info[0]
+        #     if info[1] > biggest_sum:
+        #         biggest_sum = info[1]
+        #         text = info[0]
+        # yield biggest_sum, text
 
     def steps(self):
         return [MRStep(mapper=self.mapper_text_by_word),
@@ -56,5 +63,6 @@ class UniqueReview(MRJob):
 if __name__ == '__main__':
     start = time.time()
     UniqueReview.run()
+    output_to_csv.make_csv('unique_comments', most_unique_comments)
     end = time.time()
     print("Time: " + str(end - start) + "sec")
