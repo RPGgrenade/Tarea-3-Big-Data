@@ -15,4 +15,6 @@ Todo hecho en Windows usando Python 3.5.2 (importante para ciertas l√≠neas de c√
 
 *30000 reviews* = 19,2 sec
 
+*todos los reviews* = 23 min 19 sec
+
 **users_category_reviews.py, users_most_similar.py, users_most_similar_ratings.py, users_unique_comment.py**: Los scripts usados para probar la capacidad del convertidor a csv
