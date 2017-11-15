@@ -55,31 +55,6 @@ class StarsPerCategory(MRJob):
                 yield review_id, [category, stars]
 
 
-        user_dict = dict()
-        for item in user_vote:
-            user_id = item[0]
-            votes = item[1]
-            if user_id in user_dict:
-                user_dict[user_id].append(votes)
-            else:
-                user_dict[user_id] = [votes]
-
-        most_popular_user = None
-        max_popularity = 0
-        for user, vote_list in user_dict.items():
-            review_count = len(vote_list)
-            review_popularity = sum(vote_list)
-            # assumption of count being more important, with popularity average adding onto it
-            # a single extremely useful or popular review is similar to many irrelevant reviews
-            popularity = review_count + (review_popularity/review_count)
-            if popularity > max_popularity:
-                max_popularity = popularity
-                most_popular_user = user
-
-        categorey_reviews[category] = most_popular_user
-
-        yield category, most_popular_user
-
     def steps(self):
         return [MRStep(mapper=self.mapper_stars_category),
                 MRStep(reducer=self.reducer_join_business_review),
