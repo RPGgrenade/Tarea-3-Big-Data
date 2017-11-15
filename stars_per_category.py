@@ -54,7 +54,6 @@ class StarsPerCategory(MRJob):
                 categorey_stars[review_id] = [category, stars]
                 yield review_id, [category, stars]
 
-    def reducer_most_popular_user(self, category, user_vote):
 
         user_dict = dict()
         for item in user_vote:
